@@ -7,8 +7,10 @@
     "commit": "ts-node bin/cli.ts"
   },
   "type": "commonjs",
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "commit message tool"
+  ],
+  "author": "Samuel Tuoyo",
   "license": "ISC",
   "dependencies": {
     "axios": "^1.13.2",
