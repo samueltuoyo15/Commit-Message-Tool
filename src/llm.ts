@@ -1,8 +1,6 @@
 import axios from "axios";
 import "dotenv/config";
 
-const MAX_DIFF_CHARS = 8000;
-
 interface GeminiPart {
   text?: string;
 }
@@ -19,26 +17,19 @@ interface GeminiResponse {
   candidates: GeminiCandidate[];
 }
 
-const trimDiff = (diff: string): string => {
-  return diff.length <= MAX_DIFF_CHARS ? diff : diff.slice(0, MAX_DIFF_CHARS);
-};
+const buildPrompt = (diff: string): string =>
+  `
+You are an expert developer writing Git commit messages.
 
-const buildPrompt = (diff: string): string => {
-  return `
-You are an expert developer writing clear and concise Git commit messages.
-
-Rules:
-- Use imperative mood (e.g., "Add", "Fix", "Refactor")
-- Include the main change, module, or feature affected
-- One line only
-- Max 72 characters
-- Avoid emojis or punctuation at the end
-- Make it specific and descriptive, not generic
+Summarize the changes below into one clear, descriptive line:
+- Include the type (feat, fix, refactor, chore)
+- Include the module or file affected
+- Use imperative mood
+- No emojis or punctuation at the end
 
 Changes:
 ${diff}
 `.trim();
-};
 
 export const generateCommitMessage = async (
   rawDiff: string,
@@ -49,15 +40,14 @@ export const generateCommitMessage = async (
 
   if (!API_KEY) throw new Error("Gemini API key missing");
 
-  const diff = trimDiff(rawDiff);
-  const prompt = buildPrompt(diff);
+  const prompt = buildPrompt(rawDiff);
 
   try {
     const response = await axios.post<GeminiResponse>(
       API_URL,
       {
         contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { maxOutputTokens: 128, temperature: 0.3 },
+        generationConfig: { maxOutputTokens: 150, temperature: 0.4 },
       },
       {
         headers: {
