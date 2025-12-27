@@ -1,6 +1,5 @@
 import axios from "axios";
-import dotenv from "dotenv";
-dotenv.config();
+import "dotenv/config";
 
 const MAX_DIFF_CHARS = 8000;
 
@@ -26,14 +25,15 @@ const trimDiff = (diff: string): string => {
 
 const buildPrompt = (diff: string): string => {
   return `
-Generate a professional Git commit message.
+You are an expert developer writing clear and concise Git commit messages.
 
 Rules:
+- Use imperative mood (e.g., "Add", "Fix", "Refactor")
+- Include the main change, module, or feature affected
 - One line only
-- Imperative mood (e.g. "feat", "fix", "refactor")
 - Max 72 characters
-- No emojis
-- No punctuation at the end
+- Avoid emojis or punctuation at the end
+- Make it specific and descriptive, not generic
 
 Changes:
 ${diff}
@@ -57,7 +57,7 @@ export const generateCommitMessage = async (
       API_URL,
       {
         contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { maxOutputTokens: 64, temperature: 0.2 },
+        generationConfig: { maxOutputTokens: 128, temperature: 0.3 },
       },
       {
         headers: {

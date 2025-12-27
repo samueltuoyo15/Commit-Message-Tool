@@ -4,8 +4,7 @@ import simpleGit, { type SimpleGit } from "simple-git";
 import chalk from "chalk";
 import { getGitDiff } from "../src/git";
 import { generateCommitMessage } from "../src/llm";
-import dotenv from "dotenv";
-dotenv.config();
+import "dotenv/config";
 
 const git: SimpleGit = simpleGit();
 const program = new Command();
