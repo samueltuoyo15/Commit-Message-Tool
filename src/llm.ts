@@ -44,7 +44,7 @@ export const generateCommitMessage = async (
   rawDiff: string,
 ): Promise<string> => {
   const API_URL =
-    "https://generativelanguage.googleapis.com/v1beta/models/gemini-3-pro-preview:generateContent";
+    "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
   const API_KEY = process.env.GEMINI_API_KEY;
 
   if (!API_KEY) throw new Error("Gemini API key missing");
