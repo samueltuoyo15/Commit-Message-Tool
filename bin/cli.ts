@@ -19,22 +19,24 @@ program
 program.action(async (options) => {
   try {
     const diff = await getGitDiff();
-
-    if (!diff || diff.includes("No changes staged")) {
-      console.log(chalk.yellow("Nostaged changes to commit, Samuel!"));
+    if (!diff) {
+      console.log(chalk.yellow("No changes to commit!"));
       process.exit(0);
     }
 
-    console.log(chalk.blue("Analyzingstaged change...\n"));
+    const status = await git.status();
+    console.log(chalk.blue("\nFiles being committed:"));
+    status.staged.forEach((file) => console.log(chalk.cyan(`- ${file}`)));
+    console.log("");
+
+    console.log(chalk.blue("Analyzing staged changes...\n"));
     const message = await generateCommitMessage(diff);
 
     console.log(chalk.green("Commit message generated:\n"));
     console.log(chalk.green(`"${message}"\n`));
 
     console.log(chalk.blue(`> ran: git commit -m "${message}"`));
-
     await git.commit(message);
-
     console.log(chalk.green("\nCommit successful"));
 
     if (options.push) {

@@ -6,10 +6,14 @@ const git: SimpleGit = simpleGit();
 export const getGitDiff = async () => {
   try {
     await git.raw(["config", "core.autocrlf", "true"]);
-    const diff = await git.diff(["--cached", "--ignore-space-at-eol"]);
-    if (diff) return diff;
-    const unstaged = await git.diff(["--ignore-space-at-eol"]);
-    return unstaged || "No changes detected";
+    let diff = await git.diff(["--cached", "--ignore-space-at-eol"]);
+    if (!diff) {
+      console.log("No staged changes detected. Auto-staging all files...");
+      await git.add(".");
+      diff = await git.diff(["--cached", "--ignore-space-at-eol"]);
+      if (!diff) return "";
+    }
+    return diff;
   } catch (error) {
     console.error(error);
     return "";

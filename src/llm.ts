@@ -46,7 +46,8 @@ const buildPrompt = (diff: string): string => {
 export const generateCommitMessage = async (
   rawDiff: string,
 ): Promise<string> => {
-  const API_URL = "https://api.generative.google.com/v1/gemini-3-pro-preview";
+  const API_URL =
+    "https://generativelanguage.googleapis.com/v1beta/models/gemini-3-pro-preview";
   const API_KEY = process.env.GEMINI_API_KEY;
 
   if (!API_URL || !API_KEY) {
