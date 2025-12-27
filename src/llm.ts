@@ -94,23 +94,10 @@ export const generateCommitMessage = async (
       },
     );
 
-    const message =
-      response.data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
-
-    if (!message || message.length === 0) {
-      return "chore: update code";
-    }
-
-    const hasParentheses = /\(.*\)/.test(message);
-    const hasColon = message.includes(":");
-    const hasDescription =
-      message.split(":").length > 1 && message.split(":")[1].trim().length > 0;
-
-    if (!hasParentheses || !hasColon || !hasDescription) {
-      return "chore: update code";
-    }
-
-    return message;
+    return (
+      response.data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() ||
+      "chore: update code"
+    );
   } catch (error) {
     console.error("LLM request failed:", error);
     return "chore: update code";
