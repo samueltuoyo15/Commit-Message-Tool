@@ -67,7 +67,7 @@ export const generateCommitMessage = async (
   rawDiff: string,
 ): Promise<string> => {
   const API_URL =
-    "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
+    "https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent";
   const API_KEY = process.env.GEMINI_API_KEY;
 
   if (!API_KEY) throw new Error("Gemini API key missing");
@@ -79,12 +79,6 @@ export const generateCommitMessage = async (
       API_URL,
       {
         contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: {
-          maxOutputTokens: 100,
-          temperature: 0.1,
-          topK: 1,
-          topP: 0.95,
-        },
       },
       {
         headers: {
