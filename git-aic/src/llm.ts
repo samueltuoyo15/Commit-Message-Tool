@@ -1,4 +1,4 @@
-  import axios from "axios";
+  import axios, { AxiosError } from "axios";
   import chalk from "chalk";
   import { buildPrompt } from "./prompt.js";
   
@@ -17,6 +17,14 @@
   interface GeminiResponse {
     candidates: GeminiCandidate[];
   }
+  
+  interface GeminiErrorResponse {
+  error: {
+    message: string;
+    code?: number;
+    status?: string;
+  }
+}
   
   export const generateCommitMessage = async (
     rawDiff: string,
@@ -69,7 +77,23 @@
         "chore: update code"
       );
     } catch (error) {
-      console.error("LLM request failed:", error);
-      return "chore: update code";
+        if (axios.isAxiosError<GeminiErrorResponse>(error)) {
+            if (error.response) {
+          const apiMessage = error.response.data?.error?.message || error.message;
+          console.error(chalk.red(`LLM request failed: ${apiMessage}`));
+            } else if (error.request) {
+              console.error(chalk.red("Network error: Could not connect to Google API. Check your internet."));
+            } else {
+              console.error(chalk.red(`An unknown error occurred during the LLM request: ${error.message}`));
+            }
+        } else {
+           console.error(chalk.red("Unexpected Error:"), error);
+        }
+    return "chore: update code"; 
     }
-  };
+};
+
+ 
+
+
+

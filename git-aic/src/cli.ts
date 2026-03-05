@@ -33,9 +33,9 @@ program.action(async (options) => {
     let currentMessage = "";
     let confirmed = false;
 
+    console.log(chalk.blue("Analyzing staged changes...\n"));
     
     while (!confirmed) {
-      console.log(chalk.blue("Analyzing staged changes...\n"));
       currentMessage = await generateCommitMessage(diff);
      
       const { choice, message } = await getUserConfirmation(currentMessage);
@@ -44,7 +44,7 @@ program.action(async (options) => {
         currentMessage = message;
         confirmed = true;
       } else if (choice === 'r') {
-        console.log(chalk.yellow("Regenerating..."));
+        console.log(chalk.yellow("Regenerating...\n"));
         continue;
       } else {
         console.log(chalk.red("Aborted."));
@@ -62,7 +62,7 @@ program.action(async (options) => {
       console.log(chalk.green("Push successful"));
     }
   } catch (error) {
-    console.error(chalk.red("Commit failed:"), error);
+    console.error(chalk.red("\nCommit failed:"), error);
     process.exit(1);
   }
 });
